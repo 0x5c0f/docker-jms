@@ -1,0 +1,90 @@
+version: '3'
+services:
+  core:
+    image: 0x5c0f/jms_core:${Version}
+    container_name: jms_core
+    restart: always
+    tty: true
+    environment:
+      SECRET_KEY: $SECRET_KEY
+      BOOTSTRAP_TOKEN: $BOOTSTRAP_TOKEN
+      LOG_LEVEL: $LOG_LEVEL
+      DB_HOST: $DB_HOST
+      DB_PORT: $DB_PORT
+      DB_USER: $DB_USER
+      DB_PASSWORD: $DB_PASSWORD
+      DB_NAME: $DB_NAME
+      REDIS_HOST: $REDIS_HOST
+      REDIS_PORT: $REDIS_PORT
+      REDIS_PASSWORD: $REDIS_PASSWORD
+      SESSION_COOKIE_AGE: $SESSION_COOKIE_AGE
+    volumes:
+      - /data/docker/docker-jms/data/jms-data:/opt/jumpserver/data
+    ports:
+      - 127.0.0.1:8070:8070
+      - 127.0.0.1:8080:8080
+    networks:
+      - jumpserver
+
+  koko:
+    image: 0x5c0f/jms_koko:${Version}
+    container_name: jms_koko
+    restart: always
+    privileged: true
+    tty: true
+    environment:
+      CORE_HOST: http://core:8080
+      BOOTSTRAP_TOKEN: $BOOTSTRAP_TOKEN
+      LOG_LEVEL: $LOG_LEVEL
+    depends_on:
+      - core
+    volumes:
+      - koko-data:/opt/koko/data
+    ports:
+      - 2222:2222
+      - 127.0.0.1:5000:5000
+    networks:
+      - jumpserver
+
+  guacamole:
+    image: 0x5c0f/jms_guacamole:${Version}
+    container_name: jms_guacamole
+    restart: always
+    tty: true
+    environment:
+      JUMPSERVER_SERVER: http://core:8080
+      BOOTSTRAP_TOKEN: $BOOTSTRAP_TOKEN
+      GUACAMOLE_LOG_LEVEL: $LOG_LEVEL
+    depends_on:
+      - core
+    volumes:
+      - guacamole-data:/config/guacamole/data
+    ports:
+      - 127.0.0.1:8081:8080
+    networks:
+      - jumpserver
+
+  # nginx:
+  #   image: 0x5c0f/jms_nginx:${Version}
+  #   container_name: jms_nginx
+  #   restart: always
+  #   tty: true
+  #   depends_on:
+  #     - core
+  #     - koko
+  #   volumes:
+  #     - /data/docker/docker-jms/data/jms-data:/opt/jumpserver/data
+  #   ports:
+  #     - 80:80
+  #   networks:
+  #     - jumpserver
+
+volumes:
+  koko-data:
+    driver: local
+  guacamole-data:
+    driver: local
+
+networks:
+  jumpserver:
+    driver: bridge

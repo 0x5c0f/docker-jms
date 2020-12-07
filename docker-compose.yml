@@ -64,20 +64,20 @@ services:
     networks:
       - jumpserver
 
-  nginx:
-    image: 0x5c0f/jms_nginx:${Version}
-    container_name: jms_nginx
-    restart: always
-    tty: true
-    depends_on:
-      - core
-      - koko
-    volumes:
-      - ./data/jms-data:/opt/jumpserver/data
-    ports:
-      - 80:80
-    networks:
-      - jumpserver
+  # nginx:
+  #   image: 0x5c0f/jms_nginx:${Version}
+  #   container_name: jms_nginx
+  #   restart: always
+  #   tty: true
+  #   depends_on:
+  #     - core
+  #     - koko
+  #   volumes:
+  #     - ./data/jms-data:/opt/jumpserver/data
+  #   ports:
+  #     - 80:80
+  #   networks:
+  #     - jumpserver
 
 volumes:
   koko-data:

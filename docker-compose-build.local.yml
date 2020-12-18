@@ -60,6 +60,7 @@ services:
       REDIS_HOST: $REDIS_HOST
       REDIS_PORT: $REDIS_PORT
       REDIS_PASSWORD: $REDIS_PASSWORD
+      SESSION_COOKIE_AGE: $SESSION_COOKIE_AGE
     depends_on:
       - mysql
       - redis

@@ -6,7 +6,7 @@ services:
       dockerfile: core/Dockerfile
       args:
         Version: ${Version}
-    image: 0x5c0f/jms_core:${Version}
+    image: hub.0x5c0f.cc/0x5c0f/jms_core:${Version}
     container_name: jms_core
     restart: always
     tty: true
@@ -23,6 +23,7 @@ services:
       REDIS_PORT: $REDIS_PORT
       REDIS_PASSWORD: $REDIS_PASSWORD
       SESSION_COOKIE_AGE: $SESSION_COOKIE_AGE
+      SESSION_EXPIRE_AT_BROWSER_CLOSE: $SESSION_EXPIRE_AT_BROWSER_CLOSE
     volumes:
       - ./data/jms-data:/opt/jumpserver/data
     ports:
@@ -37,7 +38,7 @@ services:
       dockerfile: koko/Dockerfile
       args:
         Version: ${Version}
-    image: 0x5c0f/jms_koko:${Version}
+    image: hub.0x5c0f.cc/0x5c0f/jms_koko:${Version}
     container_name: jms_koko
     restart: always
     privileged: true
@@ -62,7 +63,7 @@ services:
       dockerfile: guacamole/Dockerfile
       args:
         Version: ${Version}
-    image: 0x5c0f/jms_guacamole:${Version}
+    image: hub.0x5c0f.cc/0x5c0f/jms_guacamole:${Version}
     container_name: jms_guacamole
     restart: always
     tty: true
@@ -85,7 +86,7 @@ services:
   #     dockerfile: nginx/Dockerfile
   #     args:
   #       Version: ${Version}
-  #   image: 0x5c0f/jms_nginx:${Version}
+  #   image: hub.0x5c0f.cc/0x5c0f/jms_nginx:${Version}
   #   container_name: jms_nginx
   #   restart: always
   #   tty: true

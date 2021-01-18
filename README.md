@@ -1,3 +1,8 @@
+# 应官方安全漏洞公告，指定初始版本由`v2.6.2`开始，于公网访问主机需紧急修复   
+> https://github.com/jumpserver/jumpserver/blob/master/README.md  
+
+---  
+
 ## Jumpserver Docker-Compose
 官方仓库： 
 > [https://github.com/jumpserver/Dockerfile](https://github.com/jumpserver/Dockerfile)  
@@ -37,15 +42,16 @@ grant all on jumpserver.* to 'jumpserver'@'%' identified by 'weakPassword';
 
 - nginx server
 ```bash
-$> export Version=v2.5.2       # . .env
+$> export Version=v2.6.2       # . .env
 $> cd /opt 
+
 $> wget https://github.com/jumpserver/luna/releases/download/${Version}/luna-${Version}.tar.gz
 $> tar -xf luna-${Version}.tar.gz
-$> mv luna-${Version} luna
+$> mv luna-${Version} jmsluna
 
 $> wget https://github.com/jumpserver/lina/releases/download/${Version}/lina-${Version}.tar.gz
 $> tar -xf lina-${Version}.tar.gz
-$> mv lina-${Version} lina
+$> mv lina-${Version} jmslina
 
 $> ln -s /data/docker/docker-jms/data/jms-data /opt/jms-data
 

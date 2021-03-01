@@ -1,0 +1,44 @@
+#!/bin/bash
+#################################################
+#   author      0x5c0f
+#   date        2021-03-01
+#   email       1269505840@qq.com
+#   web         blog.0x5c0f.cc
+#   version     1.0.0
+#   last update 2021-03-01
+#   descript    Use : ./prepare
+#################################################
+
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:~/bin
+export PATH
+
+# base script dir 
+base_dir=$(dirname $(readlink -f "$0"))
+
+set -e
+
+Version=v2.6.2
+SITEDIR=/data/wwwroot
+
+cat >/dev/stdout <<EOF
+### 检查站点前端信息   ###
+jms     版本:  ${Version}
+站点前端目录:  ${SITEDIR}
+##############################
+
+EOF
+
+read -p "press any key to continue ..." 
+echo
+
+cd ${SITEDIR}
+
+wget https://github.com/jumpserver/luna/releases/download/${Version}/luna-${Version}.tar.gz
+tar -xf luna-${Version}.tar.gz
+ln -s ${SITEDIR}/luna-${Version} /opt/jmsluna
+
+wget https://github.com/jumpserver/lina/releases/download/${Version}/lina-${Version}.tar.gz
+tar -xf lina-${Version}.tar.gz
+ln -s ${SITEDIR}/lina-${Version} /opt/jmslina
+
+ln -s ${base_dir}/data/jms-data /opt/jms-data

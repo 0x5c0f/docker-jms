@@ -55,5 +55,8 @@ $> mv lina-${Version} jmslina
 
 $> ln -s /data/docker/docker-jms/data/jms-data /opt/jms-data
 
+# or 直接执行 
+$> ./prepare 
+
 # 复制 jms.conf.j2 到 nginx 的 conf.d/jms.conf 下，需修改jms.conf的主机名
 ```

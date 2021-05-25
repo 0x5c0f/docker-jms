@@ -1,7 +1,6 @@
 #!/bin/bash
-#
-
-sleep 5s
+# 
+sleep 5 
 while ! nc -z $DB_HOST $DB_PORT;
 do
     echo "wait for jms_mysql ready"
@@ -14,17 +13,24 @@ do
     sleep 2s
 done
 
+function cleanup()
+{
+    local pids=`jobs -p`
+    if [[ "${pids}" != ""  ]]; then
+        kill ${pids} >/dev/null 2>/dev/null
+    fi
+}
+
 if [ ! -f "/opt/jumpserver/config.yml" ]; then
     echo > /opt/jumpserver/config.yml
 fi
 
-if [ ! $LOG_LEVEL ]; then
-    export LOG_LEVEL=ERROR
-fi
+action="${1-start}"
+service="${2-all}"
 
-if [ ! $WINDOWS_SKIP_ALL_MANUAL_PASSWORD ]; then
-    export WINDOWS_SKIP_ALL_MANUAL_PASSWORD=True
+trap cleanup EXIT
+if [[ "$action" == "bash" || "$action" == "sh" ]];then
+    bash
+else
+    python /opt/jumpserver/jms "${action}" "${service}"
 fi
-
-source /opt/py3/bin/activate
-cd /opt/jumpserver && ./jms start

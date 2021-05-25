@@ -8,9 +8,10 @@ do
     sleep 2
 done
 
-if [ ! $LOG_LEVEL ]; then
-    export LOG_LEVEL=ERROR
+if [ ! $GUACD_LOG_LEVEL ]; then
+    export GUACD_LOG_LEVEL=debug
+else
+    export GUACD_LOG_LEVEL=${GUACD_LOG_LEVEL,,}
 fi
 
-cd /opt/koko
-./koko
+exec /usr/bin/supervisord

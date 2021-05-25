@@ -1,14 +1,9 @@
-# 应官方安全漏洞公告，指定初始版`v2.6.2`开始，于公网访问主机需紧急修复   
-> https://github.com/jumpserver/jumpserver/blob/master/README.md  
-
----  
-
 ## Jumpserver Docker-Compose 仓库  
 此仓库目前已归档:  
 > ~~[https://github.com/jumpserver/Dockerfile](https://github.com/jumpserver/Dockerfile)~~  
 
 ## Jumpserver Installer 仓库  
-官方最新的部署支持方案,后续管理及升级也将全部由其控制，提供分离部署方案，但似乎不再提供自打包部署方案
+官方最新的部署支持方案,后续管理及升级也将全部由其控制，提供分离部署方案，但似乎不再提供自构建部署方案
 > [https://github.com/jumpserver/installer](https://github.com/jumpserver/installer)   
 
 
@@ -32,13 +27,15 @@ $> docker-compose -f docker-compose.local.yml up -d
 
 - `.env` 里面配置的应该是常规需要的，若其他参数请参考官方文档 [`https://docs.jumpserver.org/zh/master/admin-guide/env`](https://docs.jumpserver.org/zh/master/admin-guide/env/), 所需参数直接加入`docker`环境变量即可生效  
 
-- 首次使用需要先执行`build`,或者将`image`标签更换为官方镜像 
+- 首次使用需要先 `build` 
 
-- 这个是我根据 [~~官方仓库~~](https://github.com/jumpserver/Dockerfile) 改的
+- ~~这个是我根据官方仓库 [`[jumpserver/Dockerfile]`](https://github.com/jumpserver/Dockerfile) 改的~~
+
+- 当前版本兼容 `v2.10.0+`, 若其要其他版本,可查看 [`Releases`](https://github.com/0x5c0f/docker-jms/releases)版本或使用 [`[jumpserver/installer]`](https://github.com/jumpserver/installer)仓库 
+
+- 当前第二版根据 [`[jumpserver/installer]`](https://github.com/jumpserver/installer) 调整 
 
 - 仓库可将`redis`、`mysql`、`nginx`全部分离外置环境 
-
-- **[[jumpserver/installer]](https://github.com/jumpserver/installer) 仓库采用了统一管理, 基础镜像增加了一个(据了解是由`core`分离出来的),至`2021-04-23`,当前仓库仍兼容`jms`最新版**
 
 - 当前仓库不会随官方更新而修改基础版本(*我只是部署的,改不改意义不大*), 但会随官方变更(环境)而更新 
 

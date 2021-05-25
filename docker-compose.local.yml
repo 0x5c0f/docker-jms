@@ -1,10 +1,9 @@
-version: '3'
+version: '2.4'
 services:
   mysql:
     image: hub.0x5c0f.cc/0x5c0f/jms_mysql:${Version}
     container_name: jms_mysql
     restart: always
-    tty: true
     environment:
       DB_PORT: $DB_PORT
       DB_USER: $DB_USER
@@ -13,26 +12,28 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
-      - jumpserver
-
+      - net
+  
   redis:
     image: hub.0x5c0f.cc/0x5c0f/jms_redis:${Version}
     container_name: jms_redis
     restart: always
     tty: true
     environment:
+      REDIS_HOST: $REDIS_HOST
       REDIS_PORT: $REDIS_PORT
       REDIS_PASSWORD: $REDIS_PASSWORD
     volumes:
       - redis-data:/var/lib/redis/
     networks:
-      - jumpserver
+      - net
 
-  core:
-    image: hub.0x5c0f.cc/0x5c0f/jms_core:${Version}
-    container_name: jms_core
+  celery:
+    image: hub.0x5c0f.cc/0x5c0f/jms_celery:${Version}
+    container_name: jms_celery
     restart: always
     tty: true
+    command: start task
     environment:
       SECRET_KEY: $SECRET_KEY
       BOOTSTRAP_TOKEN: $BOOTSTRAP_TOKEN
@@ -48,51 +49,75 @@ services:
       SESSION_COOKIE_AGE: $SESSION_COOKIE_AGE
       SESSION_EXPIRE_AT_BROWSER_CLOSE: $SESSION_EXPIRE_AT_BROWSER_CLOSE
     depends_on:
-      - mysql
-      - redis
+      - core
     volumes:
       - jms-data:/opt/jumpserver/data
     networks:
-      - jumpserver
-
+      - net
+      
+  core:
+    image: hub.0x5c0f.cc/0x5c0f/jms_core:${Version}
+    container_name: jms_core
+    restart: always
+    tty: true
+    command: start web
+    environment:
+      SECRET_KEY: $SECRET_KEY
+      BOOTSTRAP_TOKEN: $BOOTSTRAP_TOKEN
+      LOG_LEVEL: $LOG_LEVEL
+      DB_HOST: $DB_HOST
+      DB_PORT: $DB_PORT
+      DB_USER: $DB_USER
+      DB_PASSWORD: $DB_PASSWORD
+      DB_NAME: $DB_NAME
+      REDIS_HOST: $REDIS_HOST
+      REDIS_PORT: $REDIS_PORT
+      REDIS_PASSWORD: $REDIS_PASSWORD
+      SESSION_COOKIE_AGE: $SESSION_COOKIE_AGE
+      SESSION_EXPIRE_AT_BROWSER_CLOSE: $SESSION_EXPIRE_AT_BROWSER_CLOSE
+      LOG_LEVEL: $LOG_LEVEL
+    volumes:
+      - jms-data:/opt/jumpserver/data
+    depends_on:
+      - redis
+      - mysql
+    networks:
+      - net
+  
   koko:
     image: hub.0x5c0f.cc/0x5c0f/jms_koko:${Version}
     container_name: jms_koko
     restart: always
-    privileged: true
     tty: true
     environment:
       CORE_HOST: http://core:8080
       BOOTSTRAP_TOKEN: $BOOTSTRAP_TOKEN
       LOG_LEVEL: $LOG_LEVEL
+    ports:
+      - 2222:2222
     depends_on:
-      - mysql
-      - redis
       - core
     volumes:
       - koko-data:/opt/koko/data
-    ports:
-      - 2222:2222
+    privileged: true
     networks:
-      - jumpserver
+      - net
 
-  guacamole:
-    image: hub.0x5c0f.cc/0x5c0f/jms_guacamole:${Version}
-    container_name: jms_guacamole
+  lion:
+    image: hub.0x5c0f.cc/0x5c0f/jms_lion:${Version}
+    container_name: jms_lion
     restart: always
     tty: true
     environment:
-      JUMPSERVER_SERVER: http://core:8080
+      CORE_HOST: http://core:8080
       BOOTSTRAP_TOKEN: $BOOTSTRAP_TOKEN
-      GUACAMOLE_LOG_LEVEL: $LOG_LEVEL
-    depends_on:
-      - mysql
-      - redis
-      - core
+      LOG_LEVEL: $LOG_LEVEL
     volumes:
-      - guacamole-data:/config/guacamole/data
+      - lion-data:/opt/lion/data
+    depends_on:
+      - core
     networks:
-      - jumpserver
+      - net
 
   nginx:
     image: hub.0x5c0f.cc/0x5c0f/jms_nginx:${Version}
@@ -100,16 +125,20 @@ services:
     restart: always
     tty: true
     depends_on:
-      - mysql
-      - redis
       - core
-      - koko
+      - redis
+      - mysql
+      - koko 
     volumes:
       - jms-data:/opt/jumpserver/data
     ports:
       - 8080:80
     networks:
-      - jumpserver
+      - net
+
+networks:
+  net:
+    driver: bridge
 
 volumes:
   mysql-data:
@@ -118,12 +147,7 @@ volumes:
     driver: local
   jms-data:
     driver: local
+  lion-data:
+    driver: local
   koko-data:
     driver: local
-  guacamole-data:
-    driver: local
-
-networks:
-  jumpserver:
-    driver: bridge
-

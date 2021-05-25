@@ -17,7 +17,7 @@ base_dir=$(dirname $(readlink -f "$0"))
 
 set -e
 
-Version=v2.6.2
+Version=v2.10.0
 SITEDIR=/data/wwwroot
 
 cat >/dev/stdout <<EOF
@@ -34,11 +34,11 @@ echo
 cd ${SITEDIR}
 
 wget https://github.com/jumpserver/luna/releases/download/${Version}/luna-${Version}.tar.gz
-tar -xf luna-${Version}.tar.gz
-ln -s ${SITEDIR}/luna-${Version} /opt/jmsluna
+tar -xf luna-${Version}.tar.gz && rm -rf luna-${Version}.tar.gz
+ln -snf ${SITEDIR}/luna-${Version} /opt/jmsluna
 
 wget https://github.com/jumpserver/lina/releases/download/${Version}/lina-${Version}.tar.gz
-tar -xf lina-${Version}.tar.gz
-ln -s ${SITEDIR}/lina-${Version} /opt/jmslina
+tar -xf lina-${Version}.tar.gz && rm -rf lina-${Version}.tar.gz
+ln -snf ${SITEDIR}/lina-${Version} /opt/jmslina
 
-ln -s ${base_dir}/data/jms-data /opt/jms-data
+ln -snf ${base_dir}/data/jmsdata /opt/jmsdata

@@ -12,10 +12,10 @@ RUN set -ex \
     && apt update \
     && apt install -y wget ncat \
     && wget https://github.com/jumpserver/jumpserver/releases/download/${Version}/jumpserver-${Version}.tar.gz \
-    && tar -xf jumpserver-${Version}.tar.gz \ 
+    && tar -xf jumpserver-${Version}.tar.gz \
     && mv jumpserver-${Version} jumpserver \
     && chown -R root:root jumpserver \
-    && grep -v '^#' /opt/jumpserver/requirements/deb_buster_requirements.txt | xargs apt -y install \
+    && grep -v '^#' /opt/jumpserver/requirements/deb_buster_requirements.txt | xargs -n 1 apt -y install \
     && pip install --upgrade pip==20.2.4 setuptools==49.6.0 wheel==0.34.2 \
     && pip install --no-cache-dir $(grep 'jms' /opt/jumpserver/requirements/requirements.txt) \
     && pip install --no-cache-dir -r /opt/jumpserver/requirements/requirements.txt \

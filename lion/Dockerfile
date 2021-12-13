@@ -1,7 +1,7 @@
 FROM guacamole/guacd
 
 WORKDIR /opt
-ARG Version=v2.10.0
+ARG Version=v2.16.3
 ENV Version=${Version} \
     LANG=en_US.utf8
 

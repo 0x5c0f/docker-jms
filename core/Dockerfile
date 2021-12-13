@@ -1,40 +1,43 @@
-# 环境编译
-FROM python:3.8.6-slim
+FROM ubuntu:focal
 
 WORKDIR /opt
-ARG Version=v2.10.0
-ENV Version=${Version} \
-    LANG=zh_CN.utf8
+
+ARG Version=v2.16.3
+
+ENV Version=${Version} LANG=en_US.utf8
 
 RUN set -ex \
-    && sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list \
-    && sed -i 's/security.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list \
-    && apt update \
-    && apt install -y wget ncat \
+    && apt-get update \
+    && apt-get install -y wget curl gnupg2 ca-certificates lsb-release language-pack-en netcat gettext \
+    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "LANG=$LANG" > /etc/default/locale \
+    && apt-get install -y python3.8 python3.8-dev python3-venv libpq-dev libffi-dev libxml2 libxslt-dev libmariadb-dev libldap2-dev libsasl2-dev sshpass g++ make \
     && wget https://github.com/jumpserver/jumpserver/releases/download/${Version}/jumpserver-${Version}.tar.gz \
     && tar -xf jumpserver-${Version}.tar.gz \
     && mv jumpserver-${Version} jumpserver \
+    && wget https://download.jumpserver.org/files/GeoLite2-City.mmdb -O /opt/jumpserver/apps/common/utils/geoip/GeoLite2-City.mmdb \
     && chown -R root:root jumpserver \
-    && grep -v '^#' /opt/jumpserver/requirements/deb_buster_requirements.txt | xargs -n 1 apt -y install \
-    && pip install --upgrade pip==20.2.4 setuptools==49.6.0 wheel==0.34.2 \
-    && pip install --no-cache-dir $(grep 'jms' /opt/jumpserver/requirements/requirements.txt) \
-    && pip install --no-cache-dir -r /opt/jumpserver/requirements/requirements.txt \
-    && cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && localedef -c -f UTF-8 -i zh_CN zh_CN.UTF-8 \
-    && rm -rf *.tar.gz \
+    && python3.8 -m venv /opt/py3 \
+    && . /opt/py3/bin/activate \
+    && pip install --upgrade pip \
+    && pip install --upgrade setuptools \
+    && pip install --upgrade wheel \
+    && pip install $(grep -E 'PyNaCl' /opt/jumpserver/requirements/requirements.txt) \
+    && pip install grpcio==1.41.1 \
+    && pip install -r /opt/jumpserver/requirements/requirements.txt \
+    && rm -f /opt/jumpserver/apps/locale/zh/LC_MESSAGES/django.mo \
+    && cd /opt/jumpserver/apps \
+    && echo "SECRET_KEY: $(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 49)" > /opt/jumpserver/config.yml \
+    && python manage.py compilemessages \
+    && rm -f /opt/jumpserver/config.yml \
+    && cd /opt \
+    && echo ". /opt/py3/bin/activate" >> ~/.bashrc \
+    && apt-get clean all \
     && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /opt/*.tar.gz \
     && rm -rf ~/.cache/pip
-
-    # && pip config set global.index-url https://mirrors.cqu.edu.cn/pypi/web/simple \
-    # && mkdir -p /root/.ssh/ \
-    # && echo "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile /dev/null" > /root/.ssh/config \
-
-VOLUME /opt/jumpserver/data
 
 COPY core/entrypoint.sh .
 RUN chmod 755 ./entrypoint.sh
-
-EXPOSE 8070
-EXPOSE 8080
 
 ENTRYPOINT ["./entrypoint.sh"]

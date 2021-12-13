@@ -1,9 +1,9 @@
 ## Jumpserver Docker-Compose 仓库  
-此仓库目前已归档:  
-> ~~[https://github.com/jumpserver/Dockerfile](https://github.com/jumpserver/Dockerfile)~~  
+自构建部署方案  
+> [https://github.com/jumpserver/Dockerfile](https://github.com/jumpserver/Dockerfile) 
 
 ## Jumpserver Installer 仓库  
-官方最新的部署支持方案,后续管理及升级也将全部由其控制，提供分离部署方案，但似乎不再提供自构建部署方案
+官方最新的部署支持方案,后续管理及升级也将全部由其控制，提供分离部署方案  
 > [https://github.com/jumpserver/installer](https://github.com/jumpserver/installer)   
 
 
@@ -31,7 +31,7 @@ $> docker-compose -f docker-compose.local.yml up -d
 
 - ~~这个是我根据官方仓库 [`[jumpserver/Dockerfile]`](https://github.com/jumpserver/Dockerfile) 改的~~
 
-- 当前版本兼容 `v2.10.0+`, 若其要其他版本,可查看 [`Releases`](https://github.com/0x5c0f/docker-jms/releases)版本或使用 [`[jumpserver/installer]`](https://github.com/jumpserver/installer)仓库 
+- 当前版本兼容 `v2.16.3`, 若其要其他版本,可查看 [`Releases`](https://github.com/0x5c0f/docker-jms/releases)版本或使用 [`[jumpserver/installer]`](https://github.com/jumpserver/installer)仓库 
 
 - 当前第二版根据 [`[jumpserver/installer]`](https://github.com/jumpserver/installer) 调整 
 

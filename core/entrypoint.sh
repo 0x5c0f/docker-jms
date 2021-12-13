@@ -28,9 +28,11 @@ fi
 action="${1-start}"
 service="${2-all}"
 
+
 trap cleanup EXIT
 if [[ "$action" == "bash" || "$action" == "sh" ]];then
     bash
 else
+    source /opt/py3/bin/activate
     python /opt/jumpserver/jms "${action}" "${service}"
 fi

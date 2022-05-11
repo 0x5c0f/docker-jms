@@ -1,3 +1,5 @@
+*此项目停止维护，兼容版本至最后一次提交版本v2.16.3,有需要请转至官方*
+---
 ## Jumpserver Docker-Compose 仓库  
 自构建部署方案  
 > [https://github.com/jumpserver/Dockerfile](https://github.com/jumpserver/Dockerfile) 
